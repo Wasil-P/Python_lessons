@@ -9,38 +9,40 @@ import random
 
 class RandomIter:
 
-    def __init__(self, random_num: int, random_num_stop: int = None):
-        self.random_num = random_num
+    def __init__(self, random_num_first: int, random_num_second: int, random_num_stop: int = None):
+        self.random_num_first = random_num_first
+        self.random_num_second = random_num_second
         self.random_num_stop = random_num_stop
 
     def __next__(self):
-        if self.random_num_stop == self.random_num:
+        num = random.randint(self.random_num_first,self.random_num_second)
+        if self.random_num_stop == num:
             raise StopIteration
-        result = self.random_num
-        self.random_num += 1
-        return result
+        return num
 
     def __iter__(self):
         return self
 
-random_num = random.randint(1,5)
-random_num_stop = random_num + random.randint(5,7)
-random_iterator_stop = RandomIter(random_num, random_num_stop)
-for num in random_iterator_stop:
-    print(num)
+random_num_first = 1
+random_num_second = 5
+random_num_stop = 2
+# random_iterator_stop = RandomIter(random_num_first, random_num_second, random_num_stop)
+# for num in random_iterator_stop:
+#     print(num)
 
-random_iterator_nonstop = RandomIter(random_num)
-for num in random_iterator_nonstop:
-    print(num)
+# random_iterator_nonstop = RandomIter(random_num_first, random_num_second)
+# for num in random_iterator_nonstop:
+#     print(num)
 
 
-def random_generator(random_num: int, random_num_stop: int = None):
+def random_generator(random_num_first: int, random_num_second: int, random_num_stop: int = None):
     while True:
-        if random_num == random_num_stop:
+        num = random.randint(random_num_first, random_num_second)
+        if num == random_num_stop:
             break
-        yield random_num
-        random_num += 1
+        yield num
 
-endless_generator = random_generator(random_num, random_num_stop)
+
+endless_generator = random_generator(1, 5, 2)
 for num in endless_generator:
     print(num)
