@@ -1,6 +1,6 @@
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmarker
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -11,7 +11,8 @@ class Base(DeclarativeBase):
 
 
 engine = None
-Session = sessionmarker()
+Session = sessionmaker()
+
 
 def configure_engine():
     global engine
@@ -41,12 +42,13 @@ class BankAccountHistory(Base):
     __tablename__ = "bankaccounthistory"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    acc_name = mapped_column(ForeignKey("bankacc.acc_name"))
+    id_acc = mapped_column(ForeignKey("bankacc.id_acc"))
     bankacc: Mapped["BankAcc"] = relationship("BankAcc", back_populates="bankaccounthistory")
     amount: Mapped[int]
     date_time: Mapped[int]
-    operation_name = mapped_column(ForeignKey("operationname.operation_name"))
-    bankacc: Mapped["BankAcc"] = relationship("BankAcc", back_populates="bankaccounthistory")
+    id_operation = mapped_column(ForeignKey("operationname.id_operation"))
+    operationname: Mapped["OperationName"] = relationship("OperationName", back_populates="bankaccounthistory")
+
 
 configure_engine()
 Base.metadata.create_all(engine)
@@ -55,4 +57,12 @@ session = Session()
 
 account_Nick = BankAcc(acc_name="Nick", balance = 20)
 session.add(account_Nick)
+session.commit()
+
+operationname_plus = OperationName(operation_name="PLUS")
+session.add(operationname_plus)
+session.commit()
+
+operationname_minus = OperationName(operation_name="MINUS")
+session.add(operationname_minus)
 session.commit()
